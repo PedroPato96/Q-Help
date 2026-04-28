@@ -2,84 +2,7 @@ import customtkinter as ctk
 import subprocess
 import os
 import sys
-from tkinter import messagebox
-
-# Configuração visual profissional
-ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("blue")
-
-class QHelpApp(ctk.CTk):
-    def __init__(self):
-        super().__init__()
-
-        # Forçando o tamanho e impedindo o "nanismo" (DPI scaling do Windows)
-        self.title("Q-Help - Executive Analytics Control")
-        self.width_win = 600
-        self.height_win = 480
-        
-        # Cálculo de centralização
-        screen_width = self.winfo_screenwidth()
-        screen_height = self.winfo_screenheight()
-        x = (screen_width // 2) - (self.width_win // 2)
-        y = (screen_height // 2) - (self.height_win // 2)
-        
-        self.geometry(f"{self.width_win}x{self.height_win}+{x}+{y}")
-        self.minsize(600, 480)
-
-        # Título Principal
-        self.label = ctk.CTkLabel(self, text="Q-Help Management Console", font=("Roboto", 24, "bold"))
-        self.label.pack(pady=(40, 20))
-
-        # Botão 1: Correlação Hardware (GLPI + Spiceworks)
-        self.btn_etl = ctk.CTkButton(self, text="1. RUN HARDWARE CORRELATION (GLPI)", 
-                                    command=lambda: self.execute("phase1_etl.py"),
-                                    width=400, height=50, font=("Roboto", 14))
-        self.btn_etl.pack(pady=15)
-
-        # Botão 2: Analytics Completo (Métricas do PDF)
-        self.btn_analytics = ctk.CTkButton(self, text="2. GENERATE PDF METRICS & ANALYTICS", 
-                                          command=lambda: self.execute("phase1_analytics.py"),
-                                          width=400, height=50, font=("Roboto", 14),
-                                          fg_color="#1f538d", hover_color="#14375e")
-        self.btn_analytics.pack(pady=15)
-
-        # Barra de Status
-        self.status_bar = ctk.CTkLabel(self, text="Status: Sistema Pronto", text_color="gray")
-        self.status_bar.pack(side="bottom", pady=20)
-
-    def execute(self, script_name):
-        # 1. Localiza o diretório real onde este arquivo (main_gui.py) está
-        current_dir = os.path.dirname(os.path.realpath(__file__))
-        
-        # 2. Constrói o caminho absoluto para o script vizinho e normaliza para o Windows
-        script_path = os.path.normpath(os.path.join(current_dir, script_name))
-        
-        # 3. Pega o executável do Python do ambiente virtual (venv)
-        python_exe = sys.executable
-
-        self.status_bar.configure(text=f"Processando {script_name}...", text_color="yellow")
-        self.update()
-
-        try:
-            # Roda o script usando aspas duplas para evitar erros com espaços no caminho
-            # shell=True é necessário para o Windows interpretar corretamente o comando com aspas
-            cmd = f'"{python_exe}" "{script_path}"'
-            
-            process = subprocess.run(cmd, shell=True, capture_output=True, text=True, encoding='latin1')
-            
-            if process.returncode == 0:
-                # Se o script deu certo, as métricas do PDF (AVG First Response, etc) aparecem aqui
-                print(f"--- OUTPUT {script_name} ---\n{process.stdout}")
-                messagebox.showinfo("Sucesso", f"O módulo {script_name} foi processado com sucesso!")
-                self.status_bar.configure(text=f"Status: {script_name} concluído.", text_color="green")
-            else:
-                # Se o arquivo não existir ou o script quebrar, o erro aparece aqui
-             import customtkinter as ctk
-import subprocess
-import os
-import sys
 import threading
-from tkinter import messagebox
 
 # Configuração visual profissional
 ctk.set_appearance_mode("dark")
@@ -91,7 +14,7 @@ class QHelpApp(ctk.CTk):
 
         self.title("Q-Help - Executive Analytics Control")
         self.width_win = 700
-        self.height_win = 650 # Aumentei a janela para caber o terminal
+        self.height_win = 650 # Janela maior para caber o terminal
         
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
