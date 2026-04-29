@@ -1,11 +1,11 @@
 import pandas as pd
 import matplotlib
-matplotlib.use('Agg') 
+matplotlib.use('Agg') # O SEGREDO PARA NÃO TRAVAR A INTERFACE
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
-
+# --- A MÁGICA DOS CAMINHOS ABSOLUTOS ---
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(CURRENT_DIR)
 
@@ -33,18 +33,12 @@ def run_full_analytics():
         print(f"Erro Crítico: Arquivo não encontrado.\nDetalhe: {e}")
         return
 
-    # 2. MÉTRICAS PRINCIPAIS (Igual à Tabela do PDF)
+    # 2. MÉTRICAS PRINCIPAIS (SLA)
     print("\n--- CALCULANDO MÉTRICAS DE SLA ---")
     if 'First Response Secs' in df_spice.columns:
-        
-        # --- CORREÇÃO DO ERRO NUMÉRICO ---
-        # 1. Converte tudo para texto para garantir a manipulação
-        # 2. Troca possíveis vírgulas decimais por pontos
-        # 3. Força a conversão para número (errors='coerce' ignora textos sujos transformando-os em vazio/NaN)
         df_spice['First Response Secs'] = df_spice['First Response Secs'].astype(str).str.replace(',', '.')
         df_spice['First Response Secs'] = pd.to_numeric(df_spice['First Response Secs'], errors='coerce')
         
-        # Calcula a média ignorando os valores vazios
         avg_first_resp_h = df_spice['First Response Secs'].mean() / 3600
         print(f"AVG First Response: {avg_first_resp_h:.2f} Horas")
     else:
@@ -62,23 +56,27 @@ def run_full_analytics():
         plt.title('Project Status - Distribution')
         plt.savefig(os.path.join(PROCESSED_PATH, 'chart_status.png'))
         plt.close()
-        print("-> [OK] chart_status.png salvo na pasta processed!")
+        print("-> [OK] chart_status.png salvo com sucesso!")
         
     try:
         plt.figure(figsize=(12, 6))
         col_x = df_mensal.columns[0]
         col_y = df_mensal.columns[1]
-        sns.barplot(data=df_mensal, x=col_x, y=col_y, palette='Blues_d')
+        
+        # Correção do Seaborn: Adicionado hue=col_x e legend=False
+        sns.barplot(data=df_mensal, x=col_x, y=col_y, hue=col_x, palette='Blues_d', legend=False)
+        
         plt.xticks(rotation=45)
         plt.title('Monthly Ticket History (since 2019)')
         plt.tight_layout()
         plt.savefig(os.path.join(PROCESSED_PATH, 'chart_monthly.png'))
         plt.close()
-        print("-> [OK] chart_monthly.png salvo na pasta processed!")
+        print("-> [OK] chart_monthly.png salvo com sucesso!")
     except Exception as e:
         print(f"-> Aviso: Não foi possível gerar o gráfico mensal. Erro: {e}")
 
-    print("\n✅ Processamento concluído! Os dados estão prontos para o PDF.")
+    # Removido o Emoji para o Windows não chorar
+    print("\n[SUCESSO] Processamento concluido! Os graficos estao prontos.")
 
 if __name__ == "__main__":
     run_full_analytics()
