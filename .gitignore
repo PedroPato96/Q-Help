@@ -179,4 +179,17 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
-data/processed/chart_status.png
+# =========================================
+# Q-Help: Proteção de Dados Sensíveis (LGPD)
+# =========================================
+
+# Ignora TODOS os arquivos CSV dentro da pasta data e suas subpastas (raw/processed)
+data/**/*.csv
+
+# Ignora todos os gráficos gerados automaticamente
+data/processed/*.png
+
+# Ignora arquivos do Excel ou outros formatos de dados que você possa colocar lá no futuro
+data/**/*.xlsx
+data/**/*.xls
+data/**/*.json
